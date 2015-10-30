@@ -1,0 +1,79 @@
+{% extends "base_admin.html" %}
+{% load static %}
+
+{% block title %}P.E.P. | Delete Folder{% endblock %}
+
+{% block additional_link %}
+    <link href="{% static 'portal/jstree/themes/default/style.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'global_setting/jasny-bootstrap/css/jasny-bootstrap.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h2 class="page-header">Folder</h2>
+    </div>
+</div><!-- Heading -->
+
+<!-- Modal Delete Folder-->
+<div id='folder-delete' class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+{#            <div class="panel-heading">#}
+{#                <i class="fa fa-trash-o fa-fw"></i> Delete Folder#}
+{#            </div><!-- /.panel-heading -->#}
+{##}
+{#            <div class="panel-body container-fluid">#}
+{#                <div class="row">#}
+{#                    <div class="jumbotron" id="folder_tree"></div>#}
+{#                </div>#}
+{##}
+{#                <div class="row">#}
+{#                    <div class="form-group col-xs-12 col-md-12 col-md-12 col-lg-12">#}
+{#                        <label for="folder_label" class="col-sm-3 control-label">Project Folder</label>#}
+{#                        <div class="col-sm-9">#}
+{#                            <input id="folder_selected" type="text" class="form-control" placeholder="Root" disabled>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="row">#}
+{#                    <div class="form-group col-xs-12 col-md-12 col-md-12 col-lg-12">#}
+{#                        <label for="folder_name" class="col-sm-3 control-label">Project Name</label>#}
+{#                        <div class="col-sm-9">#}
+{#                            <input id="folder_name_input" type="text" class="form-control" placeholder="New Project Folder Name">#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#                <div class="row">#}
+{#                    <span id="new_folder_warning"></span>#}
+{#                </div>#}
+{#            </div><!-- /.panel-body-->#}
+{##}
+{#            <div class="panel-footer">#}
+{#                <button id="btnCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>#}
+{#                <button id="btnOkay" type="button" class="btn btn-primary">Create</button>#}
+{#            </div><!-- /.panel-footer-->#}
+
+        </div><!-- Modal Content -->
+    </div><!-- Modal Dialog -->
+</div><!-- Create New Folder -->
+
+
+{% endblock %}
+
+{% block additional_script %}
+
+{#    <script src="{% static 'portal/jstree/jstree.min.js' %}"></script>#}
+{#    <script src="{% static 'portal/js/portal.js' %}"></script>#}
+{#    <script src="{% static 'portal/js/classie.js' %}"></script>#}
+{#    <script src="{% static 'global_setting/js/cbpAnimatedHeader.js' %}"></script>#}
+{#    <script src="{% static 'global_setting/jasny-bootstrap/js/jasny-bootstrap.js' %}"></script>#}
+
+    <!-- Custom Theme JavaScript -->
+{#    <script src="{% static 'portal/js/freelancer.js' %}"></script>#}
+
+    <script src="{% static 'folder_tree/js/delete.js' %}"></script>
+{% endblock %}

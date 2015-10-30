@@ -1,0 +1,5 @@
+include LICENSE
+include README.rst
+recursive-include folder_tree/static *
+recursive-include folder_tree/templates *
+recursive-include folder_tree/templatetags *
