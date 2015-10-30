@@ -22,7 +22,7 @@ from rest_framework import routers
 
 # from rest_framework.routers import DefaultRouter
 
-from .viewsets import TreeFullView, TreeFolderViewSet, GeneralFileViewSet, ImageFileViewSet
+from .viewsets import TreeFullView, GeneralFileViewSet, ImageFileViewSet, FolderViewSet, ProjectFolderViewSet
 
 # profile_root
 
@@ -36,9 +36,11 @@ router = routers.DefaultRouter()
 # profile_router = routers.NestedSimpleRouter(router, 'profile', lookup='profile')
 # router = DefaultRouter()
 
-router.register(r'folder', TreeFolderViewSet)
+# router.register(r'folder', TreeFolderViewSet)
 router.register(r'file', GeneralFileViewSet)
 router.register(r'image', ImageFileViewSet)
+router.register(r'folder', FolderViewSet)
+router.register(r'project', ProjectFolderViewSet)
 
 # The API URLS are now determined automatically by the router.
 # Additionally, we include the login URLS for the browsable API.

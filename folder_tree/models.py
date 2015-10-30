@@ -408,6 +408,7 @@ class TreeFile(models.Model):
     is_executable = check if the files is executable.
     is_locked = folder/files locked from changes.
     """
+    public_id = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     user = models.ForeignKey(User)
 

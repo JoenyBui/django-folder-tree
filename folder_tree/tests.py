@@ -15,9 +15,6 @@
  * from Protection Engineering Consultants.
 """
 
-import os
-import json
-
 from django.test import TestCase
 from django.contrib.auth.models import User
 
@@ -26,8 +23,6 @@ from .models import TreeFolder
 from .models import TreeFile
 
 from .toolkit import initializing_user_session
-# from utility.tasks import run_server
-# from global_setting import settings
 
 __author__ = 'jbui'
 

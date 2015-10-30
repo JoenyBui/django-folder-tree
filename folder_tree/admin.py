@@ -36,11 +36,11 @@ class ProjectFolderAdmin(admin.ModelAdmin):
 
 
 class ImageFileAdmin(admin.ModelAdmin):
-    list_display = ['name', 'id', 'file_type', 'photo', 'user', 'created', 'modified']
+    list_display = ['name', 'public_id', 'file_type', 'photo', 'user', 'created', 'modified']
 
 
 class GeneralFileAdmin(admin.ModelAdmin):
-    list_display = ['name', 'id', 'file_type', 'file', 'user', 'created', 'modified']
+    list_display = ['name', 'public_id', 'file_type', 'file', 'user', 'created', 'modified']
 
 # Register your models here.
 admin.site.register(TreeProfile, TreeProfileAdmin)

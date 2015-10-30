@@ -18,8 +18,10 @@ import os
 import sys
 import json
 
+from django.contrib.auth.models import User
+
 from rest_framework.views import APIView
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework import status
 from rest_framework.response import Response
@@ -27,8 +29,8 @@ from rest_framework.decorators import api_view
 
 from . import toolkit as utk
 
-from .models import TreeProfile, TreeFolder, GeneralFile, ImageFile
-from .serializers import TreeProfileSerializer, TreeFolderSerializer, GeneralFileSerializer, ImageFileSerializer
+from .models import TreeProfile, TreeFolder, GeneralFile, ImageFile, ProjectFolder
+from .serializers import GeneralFileSerializer, ImageFileSerializer, FolderSerializer, ProjectSerializer
 
 __author__ = 'jbui'
 
@@ -52,55 +54,35 @@ class TreeFullView(APIView):
 
         show_files = request.REQUEST
 
-        return Response(json.loads(profile.get_folder_json(show_files)))
+        # return Response(json.loads(profile.get_folder_json(show_files)))
+        return Response(profile.get_children())
 
 
-class TreeProfileViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides 'list' and 'detail' actions
-    """
-    queryset = TreeProfile.objects.all()
-    serializer_class = TreeProfileSerializer
-    permission_classes = (permissions.IsAdminUser, )
-
-
-class TreeFolderViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides 'list', 'create', 'retrieve',
-    'update' and 'destroy' actions.
-    """
+class FolderViewSet(viewsets.ModelViewSet):
     queryset = TreeFolder.objects.all()
-    serializer_class = TreeFolderSerializer
+    serializer_class = FolderSerializer
     permission_classes = (permissions.IsAuthenticated, )
+    paginate_by = 100
 
     def get_queryset(self):
         user = self.request.user
 
         return TreeFolder.objects.filter(user=user)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, files=request.FILES)
 
-        if serializer.is_valid():
-            self.pre_save(serializer.object)
-            serializer.object.user = self.request.user
+class ProjectFolderViewSet(viewsets.ModelViewSet):
+    queryset = ProjectFolder.objects.all()
+    serializer_class = ProjectSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+    paginate_by = 100
 
-            if serializer.object.is_valid(serializer.errors, **utk.clean_json(request.data)):
-                obj = serializer.save(force_insert=True)
+    def get_queryset(self):
+        user = self.request.user
 
-                # Create folder in the directory.
-                obj.create_folder()
-
-                self.post_save(obj, created=True)
-                obj.save()
-
-                headers = self.get_success_headers(serializer.data)
-                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return ProjectFolder.objects.filter(user=user)
 
 
-class GeneralFileViewSet(viewsets.ReadOnlyModelViewSet):
+class GeneralFileViewSet(viewsets.ModelViewSet):
     """
     General File View Set
     """
@@ -116,7 +98,7 @@ class GeneralFileViewSet(viewsets.ReadOnlyModelViewSet):
         return GeneralFile.objects.filter(user=user)
 
 
-class ImageFileViewSet(viewsets.ReadOnlyModelViewSet):
+class ImageFileViewSet(viewsets.ModelViewSet):
     """
     Image file view set.
     """

@@ -52,7 +52,7 @@ def tree_item_to_dict(item):
     :return:
     """
     value = dict(
-        id=item.id,
+        id=item.public_id,
         name=item.name,
         children=[tree_item_to_dict(i) for i in item.get_children()]
     )
