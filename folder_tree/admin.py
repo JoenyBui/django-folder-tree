@@ -23,16 +23,16 @@ from .models import TreeProfile, TreeFolder, GeneralFile, ProjectFolder, ImageFi
 
 
 class TreeProfileAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'root_folder']
+    list_display = ['id', 'public_id', 'user', 'root_folder']
 
 
 class TreeFolderAdmin(MPTTModelAdmin):
     mptt_level_index = 20
-    list_display = ['name', 'id', 'user', 'created', 'modified']
+    list_display = ['name', 'public_id', 'user', 'created', 'modified']
 
 
 class ProjectFolderAdmin(admin.ModelAdmin):
-    list_display = ['name', 'id', 'user', 'app_type']
+    list_display = ['name', 'public_id', 'user', 'app_type']
 
 
 class ImageFileAdmin(admin.ModelAdmin):

@@ -18,6 +18,7 @@
 import os
 import shutil
 import json
+import uuid
 
 from django.conf import settings
 from django.core.mail import send_mail, EmailMessage
@@ -39,6 +40,7 @@ class TreeFolder(MPTTModel):
     Tree folder is used to link a file tree structure that is used to replicate what will be stored in
     the servers.  The user will create a new folder (or remove) and then progress afterwards.
     """
+    public_id = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', default=0)
     user = models.ForeignKey(User)
@@ -163,8 +165,8 @@ class TreeProfile(models.Model):
     The User Profile model inherits from Django's Model class and linked to the base User class through a one-to-one
     relationship.
 
-
     """
+    public_id = models.UUIDField(default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User)
     root_folder = models.ForeignKey(TreeFolder, null=True, blank=True, default=True)
 
