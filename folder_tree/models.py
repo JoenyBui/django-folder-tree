@@ -167,7 +167,7 @@ class TreeProfile(models.Model):
 
     """
     public_id = models.UUIDField(default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
     root_folder = models.ForeignKey(TreeFolder, null=True, blank=True, default=True)
 
     def __str__(self):
