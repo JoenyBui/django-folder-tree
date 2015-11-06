@@ -47,14 +47,17 @@ def initializing_user_session(user):
 
 def tree_item_to_dict(item):
     """
-
+    Create tree item to dictionary.
     :param item:
     :return:
     """
-    value = dict(
-        id=item.public_id,
-        name=item.name,
-        children=[tree_item_to_dict(i) for i in item.get_children()]
-    )
+    if item:
+        value = dict(
+            id=item.public_id,
+            name=item.name,
+            children=[tree_item_to_dict(i) for i in item.get_children()]
+        )
 
-    return value
+        return value
+    else:
+        return None

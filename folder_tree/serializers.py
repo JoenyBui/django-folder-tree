@@ -35,7 +35,7 @@ class FolderSerializer(serializers.Serializer):
     """
     Folder serializer
     """
-    public_id = serializers.UUIDField(default=uuid.uuid4)
+    public_id = serializers.UUIDField(default=uuid.uuid4, read_only=True)
     name = serializers.CharField(max_length=255)
     parent_id = serializers.UUIDField()
 
@@ -74,7 +74,7 @@ class ProjectSerializer(serializers.Serializer):
     """
     Folder serializer
     """
-    public_id = serializers.UUIDField(default=uuid.uuid4)
+    public_id = serializers.UUIDField(default=uuid.uuid4, read_only=True)
     name = serializers.CharField(max_length=255)
     parent_id = serializers.UUIDField()
     app_type = serializers.IntegerField()
@@ -110,11 +110,12 @@ class ProjectSerializer(serializers.Serializer):
         else:
             return None
 
+
 class GeneralFileSerializer(serializers.Serializer):
     """
     A general file type for results file.  This should not account for input file.
     """
-    public_id = serializers.UUIDField(default=uuid.uuid4)
+    public_id = serializers.UUIDField(default=uuid.uuid4, read_only=True)
     name = serializers.CharField(max_length=255)
     file_type = serializers.IntegerField()
     file = serializers.FileField()
@@ -160,7 +161,7 @@ class ImageFileSerializer(serializers.Serializer):
     """
     Image file serializer.
     """
-    public_id = serializers.UUIDField(default=uuid.uuid4)
+    public_id = serializers.UUIDField(default=uuid.uuid4, read_only=True)
     name = serializers.CharField(max_length=255)
     photo = serializers.ImageField()
     file_type = serializers.IntegerField()

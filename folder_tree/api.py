@@ -41,16 +41,10 @@ router.register(r'file', GeneralFileViewSet)
 router.register(r'image', ImageFileViewSet)
 router.register(r'folder', FolderViewSet)
 router.register(r'project', ProjectFolderViewSet)
-
 # The API URLS are now determined automatically by the router.
 # Additionally, we include the login URLS for the browsable API.
 
 urlpatterns = [
-    # url(r'^$', profile_root),
-    url(r'^', include(router.urls)),
     url(r'^tree', TreeFullView.as_view()),
-    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^', include(router.urls)),
 ]
-#
-# urlpatterns += router.urls
-# urlpatterns += profile_router.urls

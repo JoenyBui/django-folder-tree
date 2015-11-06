@@ -25,6 +25,8 @@ from django.core.mail import send_mail, EmailMessage
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from mptt.models import MPTTModel, TreeForeignKey
 from mptt.utils import tree_item_iterator
@@ -43,7 +45,7 @@ class TreeFolder(MPTTModel):
     public_id = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', default=0)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     # If folder/files locked from changes.
     is_locked = models.BooleanField(default=False)
@@ -588,3 +590,21 @@ class GeneralFile(TreeFile):
             mail.send()
         except SystemError:
             print('Send Message.')
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_profile_root(sender, instance=None, created=False, **kwargs):
+    """
+    Create a tree profile and a root folder to start.
+    :param sender:
+    :param instance:
+    :param created:
+    :param kwargs:
+    :return:
+    """
+    if created:
+        folder = TreeFolder.objects.create(name='root', user=instance, parent=None)
+        folder.save()
+
+        profile = TreeProfile.objects.create(user=instance, root_folder=folder)
+        profile.save()
