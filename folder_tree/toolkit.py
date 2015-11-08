@@ -53,7 +53,7 @@ def tree_item_to_dict(item):
     """
     if item:
         value = dict(
-            id=item.public_id,
+            public_id=item.public_id,
             name=item.name,
             children=[tree_item_to_dict(i) for i in item.get_children()]
         )

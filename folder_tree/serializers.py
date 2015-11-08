@@ -99,14 +99,18 @@ class ProjectSerializer(serializers.Serializer):
         app_type = validated_data.get('app_type')
 
         try:
-            parent = ProjectFolder.objects.filter(public_id=parent_id).first()
+            parent = TreeFolder.objects.filter(public_id=parent_id).first()
         except ObjectDoesNotExist as e:
             parent = None
 
         if parent:
             user = self.context['request'].user
 
-            return TreeFolder.objects.create(name=name, public_id=public_id, user=user, parent=parent)
+            return ProjectFolder.objects.create(name=name,
+                                                public_id=public_id,
+                                                user=user,
+                                                parent=parent,
+                                                app_type=app_type)
         else:
             return None
 

@@ -26,6 +26,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import filters
 
 from . import toolkit as utk
 
@@ -62,6 +63,8 @@ class FolderViewSet(viewsets.ModelViewSet):
     queryset = TreeFolder.objects.all()
     serializer_class = FolderSerializer
     permission_classes = (permissions.IsAuthenticated, )
+    filter_backends = (filters.DjangoFilterBackend, )
+    filter_fields = ('public_id', 'name')
     paginate_by = 100
 
     def get_queryset(self):
@@ -74,6 +77,8 @@ class ProjectFolderViewSet(viewsets.ModelViewSet):
     queryset = ProjectFolder.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated, )
+    filter_backends = (filters.DjangoFilterBackend, )
+    filter_fields = ('public_id', 'name')
     paginate_by = 100
 
     def get_queryset(self):
