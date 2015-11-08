@@ -22,7 +22,7 @@ from rest_framework import routers
 
 # from rest_framework.routers import DefaultRouter
 
-from .viewsets import TreeFullView, GeneralFileViewSet, ImageFileViewSet, FolderViewSet, ProjectFolderViewSet
+from .viewsets import TreeFullView, GeneralFileViewSet, ImageFileViewSet, FolderViewSet, ProjectFolderViewSet, JsTreeView
 
 # profile_root
 
@@ -46,5 +46,6 @@ router.register(r'project', ProjectFolderViewSet)
 
 urlpatterns = [
     url(r'^tree', TreeFullView.as_view()),
+    url(r'^jstree', JsTreeView.as_view()),
     url(r'^', include(router.urls)),
 ]

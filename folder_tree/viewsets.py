@@ -50,13 +50,24 @@ class TreeFullView(APIView):
         :param request:
         :return:
         """
-        user = self.request.user
+        user = request.user
         profile = TreeProfile.objects.get(user=user)
 
         show_files = request.REQUEST
 
         # return Response(json.loads(profile.get_folder_json(show_files)))
         return Response(profile.get_children())
+
+
+class JsTreeView(APIView):
+    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def get(self, request):
+        user = request.user
+        profile = TreeProfile.objects.get(user=user)
+
+        return Response(profile.get_jstree())
 
 
 class FolderViewSet(viewsets.ModelViewSet):

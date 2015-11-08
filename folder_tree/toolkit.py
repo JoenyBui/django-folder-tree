@@ -61,3 +61,18 @@ def tree_item_to_dict(item):
         return value
     else:
         return None
+
+def jstree_item_to_dict(item, array):
+    """
+    Return a jstree of the folder structure.
+    :param item:
+    :param array:
+    :return:
+    """
+    if item:
+        for child_item in item.get_children():
+            array.append(dict(id=child_item.public_id, parent=item.public_id, text=child_item.name, state=dict(opened=False)))
+
+            jstree_item_to_dict(child_item, array)
+    else:
+        return False

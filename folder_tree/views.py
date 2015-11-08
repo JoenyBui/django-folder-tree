@@ -26,6 +26,7 @@ from django.template import RequestContext, loader
 
 __author__ = 'jbui'
 
+
 class FolderView(View):
     """
     Render folder view.

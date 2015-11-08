@@ -184,6 +184,20 @@ class TreeProfile(models.Model):
 
         return utk.tree_item_to_dict(root)
 
+    def get_jstree(self):
+        # { id : 'ajson1', parent : '#', text : 'Simple root node', state: { opened: true} },
+        # { id : 'ajson2', parent : '#', text : 'Root node 2', state: { opened: true} },
+        # { id : 'ajson3', parent : 'ajson2', text : 'Child 1', state: { opened: true} },
+        # { id : 'ajson4', parent : 'ajson2', text : 'Child 2' , state: { opened: true}}
+        root = self.root_folder
+
+        jstree = [dict(id=root.public_id, parent='#', text=root.name, state=dict(opened=True))]
+
+        utk.jstree_item_to_dict(root, jstree)
+
+        return jstree
+
+
     @staticmethod
     def get_tree_folder(user, path):
         """
