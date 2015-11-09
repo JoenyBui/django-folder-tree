@@ -384,7 +384,6 @@ class ProjectFolder(TreeFolder):
     Project folder.
     """
     app_type = models.IntegerField(choices=gs.JOB_TYPE, default=0)
-    # app_type = models.IntegerField(choices=False, default=0)
 
     def get_file_type(self):
         """
@@ -393,19 +392,12 @@ class ProjectFolder(TreeFolder):
         """
         return 'project_folder'
 
-    def folder_name(self):
-        """
-        Project folder name.
-        :return:
-        """
-        return "#!^%s^!#_%d_%s" % (gs.JOB_TYPE[self.app_type][1], self.id, self.name)
-
     def get_path(self):
         """
         Get the path of the folder including the home folder.
         :return:
         """
-        path = self.folder_name()
+        path = self.name
 
         new_folder = self.parent
         while new_folder:
