@@ -33,9 +33,9 @@ elif sys.platform == 'linux' or sys.platform == 'linux2':
     LOCATION_TEST_USER_STORAGE = os.path.join(os.sep, "home", "jbui", "TEST")
 
 # Job Type
-JOB_TYPE_TEXT_WHAM = 0
+JOB_TYPE_TEXT_WHAM = 1
 
-JOB_TYPE = ((JOB_TYPE_TEXT_WHAM, "Wham"),)
+JOB_TYPE = ((JOB_TYPE_TEXT_WHAM, "WhAM"),)
 
 # Job Status
 JOB_STATUS_TEXT_CREATED = 0

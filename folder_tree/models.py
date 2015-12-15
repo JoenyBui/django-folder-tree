@@ -383,7 +383,7 @@ class ProjectFolder(TreeFolder):
     """
     Project folder.
     """
-    app_type = models.IntegerField(choices=gs.JOB_TYPE, default=0)
+    app_type = models.IntegerField(choices=gs.JOB_TYPE, default=1)
 
     def get_file_type(self):
         """
