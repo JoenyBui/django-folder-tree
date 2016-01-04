@@ -168,7 +168,9 @@ class ImageFileSerializer(serializers.Serializer):
     public_id = serializers.UUIDField(default=uuid.uuid4, read_only=True)
     name = serializers.CharField(max_length=255)
     photo = serializers.ImageField()
-    file_type = serializers.IntegerField()
+    file_type = serializers.ChoiceField(
+        choices=gs.IMAGE_TYPE,
+    )
     folder_id = serializers.UUIDField()
 
     def to_representation(self, instance):
