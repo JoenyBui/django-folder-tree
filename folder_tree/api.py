@@ -45,7 +45,7 @@ router.register(r'project', ProjectFolderViewSet)
 # Additionally, we include the login URLS for the browsable API.
 
 urlpatterns = [
-    url(r'^tree', TreeFullView.as_view()),
-    url(r'^jstree', JsTreeView.as_view()),
+    # url(r'^tree', TreeFullView.as_view()),
+    # url(r'^jstree', JsTreeView.as_view()),
     url(r'^', include(router.urls)),
 ]
