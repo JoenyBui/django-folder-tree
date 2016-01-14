@@ -7,6 +7,45 @@ user organize their files.
 
 Detailed documentation is in the "docs" directory.
 
+Branch
+------
+1. master
+    main branch where the source code of HEAD always reflect a production-ready state
+
+2. develop
+    main branch where the source code of HEAD always reflects a state where the latest development changes for the next release
+
+3. feature branches
+    used to develop new features for the upcoming or a distant future release
+
+    a. May branch off from:
+        develop
+    b. Must merge back into:
+        develop
+    c. Branch naming convention:
+        anything except master, develop, release-*, or hotfix-*
+
+4. Release branches
+    support preparation of a new production release
+
+    a. May branch off from:
+        develop
+    b. Must merge back into:
+        develop and master
+    c. Branch naming convention:
+        release-*
+
+5. Hotfix
+    much like release branches in that they are also meant to prepare for a new production
+
+    a. May branch off from:
+        master
+    b. Must merge back into:
+        develop and master
+    c. Branching naming convention:
+        hotfix-*
+
+
 Quick start
 -----------
 
