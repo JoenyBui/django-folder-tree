@@ -102,7 +102,7 @@ class GeneralFileViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     General File Viewset
 
     """
-    queryset = GeneralFile.objects.all()
+    # queryset = GeneralFile.objects.all()
     serializer_class = GeneralFileSerializer
     permission_classes = (permissions.IsAuthenticated, )
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
@@ -123,11 +123,11 @@ class ImageFileViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     Image file viewset.
 
     """
-    queryset = ImageFile.objects.all()
+    # queryset = ImageFile.objects.all()
     serializer_class = ImageFileSerializer
     permission_classes = (permissions.IsAuthenticated, )
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
-    filter_fields = ('id', 'name', 'user', 'file_type', 'photo')
+    filter_fields = ('id', 'name', 'user', 'file_type')
     search_fields = ('id', 'name', 'user')
     ordering_fields = ('created', 'modified')
     authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)

@@ -21,41 +21,10 @@ class FolderSerializer(serializers.ModelSerializer):
     Folder serializer
 
     """
-    # name = serializers.CharField(max_length=255)
-    # parent_id = serializers.UUIDField()
 
     class Meta:
         model = TreeFolder
         fields = ('id', 'name', 'parent', 'is_locked', 'created', 'modified')
-
-    # def to_representation(self, instance):
-    #     ret = super(FolderSerializer, self).to_representation(instance)
-    #
-    #     if instance.parent:
-    #         ret["parent_id"] = instance.parent.public_id
-    #     else:
-    #         ret["parent_id"] = None
-    #
-    #     return ret
-    #
-    # def create(self, validated_data):
-    #     """
-    #
-    #     """
-    #     parent_id = validated_data.get('parent_id')
-    #     name = validated_data.get('name')
-    #
-    #     try:
-    #         parent = TreeFolder.objects.filter(public_id=parent_id).first()
-    #     except ObjectDoesNotExist as e:
-    #         parent = None
-    #
-    #     if parent:
-    #         user = self.context['request'].user
-    #
-    #         return TreeFolder.objects.create(name=name, user=user, parent=parent)
-    #     else:
-    #         return None
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -63,38 +32,10 @@ class ProjectSerializer(serializers.ModelSerializer):
     Folder serializer
 
     """
-    # name = serializers.CharField(max_length=255)
-    # parent_id = serializers.UUIDField()
-    # app_type = serializers.IntegerField()
 
     class Meta:
         model = ProjectFolder
         fields = ('id', 'name', 'app_type', 'parent', 'is_locked', 'created', 'modified')
-
-    # def create(self, validated_data):
-    #     """
-    #
-    #     """
-    #     parent_id = validated_data.get('parent_id')
-    #     name = validated_data.get('name')
-    #     public_id = validated_data.get('public_id')
-    #     app_type = validated_data.get('app_type')
-    #
-    #     try:
-    #         parent = TreeFolder.objects.filter(public_id=parent_id).first()
-    #     except ObjectDoesNotExist as e:
-    #         parent = None
-    #
-    #     if parent:
-    #         user = self.context['request'].user
-    #
-    #         return ProjectFolder.objects.create(name=name,
-    #                                             public_id=public_id,
-    #                                             user=user,
-    #                                             parent=parent,
-    #                                             app_type=app_type)
-    #     else:
-    #         return None
 
 
 class GeneralFileSerializer(serializers.ModelSerializer):
@@ -102,49 +43,10 @@ class GeneralFileSerializer(serializers.ModelSerializer):
     A general file type for results file.  This should not account for input file.
 
     """
-    # name = serializers.CharField(max_length=255)
-    # file_type = serializers.IntegerField()
-    # file = serializers.FileField()
-    # folder_id = serializers.UUIDField()
 
     class Meta:
         model = GeneralFile
-        fields = ('id', 'name', 'folder', 'is_executable', 'is_locked', 'created', 'modified')
-
-    # def to_representation(self, instance):
-    #     ret = super(GeneralFileSerializer, self).to_representation(instance)
-    #
-    #     if instance.folder:
-    #         ret["folder_id"] = instance.folder.public_id
-    #     else:
-    #         ret["folder_id"] = None
-    #
-    #     return ret
-    #
-    # def create(self, validated_data):
-    #     """
-    #     Create a new file entry.
-    #
-    #     User must provide a valid folder UUID.
-    #     """
-    #     folder_id = validated_data.get('folder_id')
-    #     name = validated_data.get('name')
-    #     file_type = validated_data.get('file_type')
-    #     file = validated_data.get('file')
-    #     public_id = validated_data.get('public_id')
-    #
-    #     try:
-    #         folder = ProjectFolder.objects.filter(public_id=folder_id).first()
-    #     except ObjectDoesNotExist as e:
-    #         folder = None
-    #
-    #     if folder:
-    #         user = self.context['request'].user
-    #
-    #         return GeneralFile.objects.create(name=name, public_id=public_id, user=user, folder=folder,
-    #                                           file_type=file_type, file=file)
-    #     else:
-    #         return None
+        fields = ('id', 'name', 'folder', 'file_type', 'file', 'is_executable', 'is_locked', 'created', 'modified')
 
 
 class ImageFileSerializer(serializers.ModelSerializer):
@@ -152,47 +54,7 @@ class ImageFileSerializer(serializers.ModelSerializer):
     Image file serializer.
 
     """
-    # name = serializers.CharField(max_length=255)
-    # photo = serializers.ImageField()
-    # file_type = serializers.ChoiceField(
-    #     choices=gs.IMAGE_TYPE,
-    # )
-    # folder_id = serializers.UUIDField()
 
     class Meta:
         model = ImageFile
         fields = ('id', 'name', 'folder', 'file_type', 'photo', 'is_executable', 'is_locked', 'created', 'modified')
-
-    # def to_representation(self, instance):
-    #     ret = super(ImageFileSerializer, self).to_representation(instance)
-    #
-    #     if instance.folder:
-    #         ret["folder_id"] = instance.folder.public_id
-    #     else:
-    #         ret["folder_id"] = None
-    #
-    #     return ret
-    #
-    # def create(self, validated_data):
-    #     """
-    #     Create a new file entry.
-    #
-    #     User must provide a valid folder UUID.
-    #     """
-    #     folder_id = validated_data.get('folder_id')
-    #     name = validated_data.get('name')
-    #     file_type = validated_data.get('file_type')
-    #     photo = validated_data.get('photo')
-    #
-    #     try:
-    #         folder = ProjectFolder.objects.filter(public_id=folder_id).first()
-    #     except ObjectDoesNotExist as e:
-    #         folder = None
-    #
-    #     if folder:
-    #         user = self.context['request'].user
-    #
-    #         return GeneralFile.objects.create(name=name, public_id=public_id, user=user, folder=folder,
-    #                                           file_type=file_type, photo=photo)
-    #     else:
-    #         return None

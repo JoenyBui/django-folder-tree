@@ -186,3 +186,4 @@ crashlytics-build.properties
 pyvenv.cfg
 pip-selfcheck.json
 
+/media/
