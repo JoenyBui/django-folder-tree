@@ -1,19 +1,10 @@
-
-import os
-import sys
-import json
-
-from django.contrib.auth.models import User
-
 from rest_framework.views import APIView
 from rest_framework import viewsets, permissions, generics
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
-from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from rest_framework import filters
 
-from . import toolkit as utk
+from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from .models import TreeProfile, TreeFolder, GeneralFile, ImageFile, ProjectFolder
 from .serializers import GeneralFileSerializer, ImageFileSerializer, FolderSerializer, ProjectSerializer
@@ -24,6 +15,7 @@ __author__ = 'jbui'
 class TreeFullView(APIView):
     """
     Return the tree full view.
+
     """
 
     authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
@@ -32,84 +24,116 @@ class TreeFullView(APIView):
     def get(self, request, format=None):
         """
         Get the JSON structure of the folder view.
+
         :param request:
+        :param format:
         :return:
         """
         user = request.user
         profile = TreeProfile.objects.get(user=user)
 
-        show_files = request.REQUEST
-
-        # return Response(json.loads(profile.get_folder_json(show_files)))
         return Response(profile.get_children())
 
 
 class JsTreeView(APIView):
+    """
+    Javascript Tree View
+
+    """
     authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
     permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
-        user = request.user
-        profile = TreeProfile.objects.get(user=user)
+        """
+        Return the javascript tree view for the model.
+
+        :param request:
+        :return:
+        """
+        profile = TreeProfile.objects.get(user=request.user)
 
         return Response(profile.get_jstree())
 
 
-class FolderViewSet(viewsets.ModelViewSet):
+class FolderViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    """
+    Folder View Set
+
+    """
     queryset = TreeFolder.objects.all()
     serializer_class = FolderSerializer
     permission_classes = (permissions.IsAuthenticated, )
-    filter_backends = (filters.DjangoFilterBackend, )
-    filter_fields = ('public_id', 'name')
-    paginate_by = 100
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    filter_fields = ('id', 'name', 'user')
+    search_fields = ('id', 'name', 'user')
+    ordering_fields = ('created', 'modified')
+    paginate_by = 25
 
     def get_queryset(self):
-        user = self.request.user
+        return TreeFolder.objects.filter(user=self.request.user)
 
-        return TreeFolder.objects.filter(user=user)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class ProjectFolderViewSet(viewsets.ModelViewSet):
+class ProjectFolderViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    """
+    Project Folder Viewset
+
+    """
     queryset = ProjectFolder.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated, )
-    filter_backends = (filters.DjangoFilterBackend, )
-    filter_fields = ('public_id', 'name')
-    paginate_by = 100
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    filter_fields = ('id', 'name', 'user')
+    search_fields = ('id', 'name', 'user')
+    ordering_fields = ('created', 'modified')
+    paginate_by = 25
 
     def get_queryset(self):
-        user = self.request.user
+        return ProjectFolder.objects.filter(user=self.request.user)
 
-        return ProjectFolder.objects.filter(user=user)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class GeneralFileViewSet(viewsets.ModelViewSet):
+class GeneralFileViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     """
-    General File View Set
+    General File Viewset
+
     """
-    queryset = GeneralFile.objects.all()
+    # queryset = GeneralFile.objects.all()
     serializer_class = GeneralFileSerializer
     permission_classes = (permissions.IsAuthenticated, )
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    filter_fields = ('id', 'name', 'user', 'file_type')
+    search_fields = ('id', 'name', 'user')
+    ordering_fields = ('created', 'modified')
     authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
-    filter_fields = ('name', 'file_type')
 
     def get_queryset(self):
-        user = self.request.user
+        return GeneralFile.objects.filter(user=self.request.user)
 
-        return GeneralFile.objects.filter(user=user)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class ImageFileViewSet(viewsets.ModelViewSet):
+class ImageFileViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     """
-    Image file view set.
+    Image file viewset.
+
     """
-    queryset = ImageFile.objects.all()
+    # queryset = ImageFile.objects.all()
     serializer_class = ImageFileSerializer
     permission_classes = (permissions.IsAuthenticated, )
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    filter_fields = ('id', 'name', 'user', 'file_type')
+    search_fields = ('id', 'name', 'user')
+    ordering_fields = ('created', 'modified')
     authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
-    filter_fields = ('name', 'file_type', 'photo')
 
     def get_queryset(self):
-        user = self.request.user
+        return ImageFile.objects.filter(user=self.request.user)
 
-        return ImageFile.objects.filter(user=user)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

@@ -1,34 +1,31 @@
 
 from django.contrib import admin
 
-from mptt.admin import MPTTModelAdmin
+from mptt.admin import DraggableMPTTAdmin
 
 from .models import TreeProfile, TreeFolder, GeneralFile, ProjectFolder, ImageFile
 
 
 class TreeProfileAdmin(admin.ModelAdmin):
-    list_display = ['id', 'public_id', 'user', 'root_folder']
-
-
-class TreeFolderAdmin(MPTTModelAdmin):
-    mptt_level_index = 20
-    list_display = ['name', 'public_id', 'user', 'created', 'modified']
+    list_display = ['id', 'user', 'root_folder']
 
 
 class ProjectFolderAdmin(admin.ModelAdmin):
-    list_display = ['name', 'public_id', 'user', 'app_type']
+    list_display = ['id', 'name', 'user', 'app_type', 'created', 'modified']
 
 
 class ImageFileAdmin(admin.ModelAdmin):
-    list_display = ['name', 'public_id', 'file_type', 'photo', 'user', 'created', 'modified']
+    list_display = ['id', 'name', 'file_type', 'photo', 'user', 'created', 'modified']
 
 
 class GeneralFileAdmin(admin.ModelAdmin):
-    list_display = ['name', 'public_id', 'file_type', 'file', 'user', 'created', 'modified']
+    list_display = ['id', 'name', 'file_type', 'file', 'user', 'created', 'modified']
+
 
 # Register your models here.
 admin.site.register(TreeProfile, TreeProfileAdmin)
-admin.site.register(TreeFolder, TreeFolderAdmin)
+admin.site.register(TreeFolder,
+                    DraggableMPTTAdmin)
 admin.site.register(ImageFile, ImageFileAdmin)
 admin.site.register(GeneralFile, GeneralFileAdmin)
 admin.site.register(ProjectFolder, ProjectFolderAdmin)

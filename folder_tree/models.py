@@ -2,15 +2,12 @@
 import os
 import shutil
 import json
-import uuid
 
 from django.conf import settings
 from django.core.mail import send_mail, EmailMessage
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from mptt.models import MPTTModel, TreeForeignKey
 from mptt.utils import tree_item_iterator
@@ -20,25 +17,44 @@ from . import global_setting as gs
 
 __author__ = 'jbui'
 
+def user_file_path(instance, filename):
+    d = timezone.now()
+
+    return '{0}/{1}/{2}/{3}/{4}'.format(
+        instance.user.id,
+        d.year,
+        d.month,
+        d.day,
+        filename)
+
 
 class TreeFolder(MPTTModel):
     """
     Tree folder is used to link a file tree structure that is used to replicate what will be stored in
     the servers.  The user will create a new folder (or remove) and then progress afterwards.
+
+    :type name: folder name
+    :type parent: parent key
+    :type user: user model
+    :type is_locked: If folder/files locked from changes.
+    :type created: created date
+    :type modified: modified date
+
     """
-    public_id = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', default=0)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-
-    # If folder/files locked from changes.
     is_locked = models.BooleanField(default=False)
-
-    created = models.DateTimeField(null=False, blank=True, default=timezone.now)
-    modified = models.DateTimeField(null=False, blank=True, default=timezone.now)
+    created = models.DateTimeField(auto_now_add=True, null=False, blank=True)
+    modified = models.DateTimeField(auto_now_add=True, null=False, blank=True)
 
     def __str__(self):
         return 'Folder: %s' % self.name
+
+    def save(self, *args, **kwargs):
+        self.modified = timezone.now()
+
+        super(TreeFolder, self).save(*args, **kwargs)
 
     class MPTTMeta:
         """
@@ -151,8 +167,10 @@ class TreeProfile(models.Model):
     The User Profile model inherits from Django's Model class and linked to the base User class through a one-to-one
     relationship.
 
+    :type user: user model
+    :type root_folder: folder root
+
     """
-    public_id = models.UUIDField(default=uuid.uuid4, editable=False)
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     root_folder = models.ForeignKey(TreeFolder, null=True, blank=True, default=True)
 
@@ -175,7 +193,12 @@ class TreeProfile(models.Model):
         # { id : 'ajson4', parent : 'ajson2', text : 'Child 2' , state: { opened: true}}
         root = self.root_folder
 
-        jstree = [dict(id=root.public_id, parent='#', text=root.name, state=dict(opened=True))]
+        jstree = [dict(
+            id=root.id,
+            parent='#',
+            text=root.name,
+            state=dict(opened=True)
+        )]
 
         utk.jstree_item_to_dict(root, jstree)
 
@@ -366,6 +389,9 @@ class TreeProfile(models.Model):
 class ProjectFolder(TreeFolder):
     """
     Project folder.
+
+    :type app_type: application type
+
     """
     app_type = models.IntegerField(choices=gs.JOB_TYPE, default=1)
 
@@ -397,24 +423,35 @@ class TreeFile(models.Model):
     File will only exists within project folders, ensuring that there is no subdirectory outside
     of the the project folder app.
 
-    is_executable = check if the files is executable.
-    is_locked = folder/files locked from changes.
+    :type name:
+    :type user:
+    :type folder: project folder model
+    :type is_executable: check if the files is executable.
+    :type is_locked: folder/files locked from changes.
+    :type created:
+    :type modified:
     """
-    public_id = models.UUIDField(default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True, blank=True)
     user = models.ForeignKey(User)
-
     folder = models.ForeignKey(ProjectFolder, null=True, blank=True)
     is_executable = models.BooleanField(default=False, blank=True)
     is_locked = models.BooleanField(default=False)
-    created = models.DateTimeField(null=False, blank=True, default=timezone.now)
-    modified = models.DateTimeField(null=False, blank=True, default=timezone.now)
+    created = models.DateTimeField(null=False, blank=True, auto_now_add=True)
+    modified = models.DateTimeField(null=False, blank=True, auto_now_add=True)
 
     def __str__(self):
         return 'File: %s' % self.name
 
     class Meta:
         abstract = True
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        # Update modified date.
+        self.modified = timezone.now()
+
+        super(TreeFile, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                   update_fields=update_fields)
 
     def is_valid(self, error, **kwargs):
         return True
@@ -456,16 +493,33 @@ class TreeFile(models.Model):
 class Trash(models.Model):
     """
     Trash folder.
+
+    :type profile: one-to-many relationship
+    :type prev: original parent folder
     """
-    profile = models.ForeignKey(TreeProfile)
-    folder = models.ForeignKey(TreeFolder)
-    previous_folder = models.IntegerField()
+    profile = models.ForeignKey(TreeProfile, on_delete=models.CASCADE)
+    prev = models.ForeignKey(TreeFolder, null=True, blank=True)
 
 
 class InputFile(TreeFile):
     """
     Input File.
+
+    :type name:
+    :type user:
+    :type folder: project folder model - one input file equals to one project folder
+    :type is_executable: check if the files is executable.
+    :type is_locked: folder/files locked from changes.
+    :type created:
+    :type modified:
     """
+    name = models.CharField(max_length=255, null=True, blank=True)
+    user = models.ForeignKey(User)
+    folder = models.OneToOneField(ProjectFolder, on_delete=models.CASCADE)
+    is_executable = models.BooleanField(default=False, blank=True)
+    is_locked = models.BooleanField(default=False)
+    created = models.DateTimeField(null=False, blank=True, auto_now_add=True)
+    modified = models.DateTimeField(null=False, blank=True, auto_now_add=True)
 
     def header(self):
         return "#!^%s^!#"
@@ -521,17 +575,24 @@ class InputFile(TreeFile):
 class ImageFile(TreeFile):
     """
     Create an image file.
+
+    :type file_type:
+    :type photo:
     """
     file_type = models.IntegerField(choices=gs.IMAGE_TYPE, default=-1)
-    photo = models.ImageField(upload_to='photo')
+    photo = models.ImageField(upload_to=user_file_path)
 
 
 class GeneralFile(TreeFile):
     """
     Create results field for the files that exist in the storage bin.
+
+    :type file_type:
+    :type file:
+
     """
     file_type = models.IntegerField(choices=gs.FILE_TYPE, default=-1)
-    file = models.FileField(upload_to='general', default='default.txt')
+    file = models.FileField(upload_to=user_file_path, default='default.txt')
 
     def set_ext(self, ext_name):
         """
@@ -580,21 +641,3 @@ class GeneralFile(TreeFile):
             mail.send()
         except SystemError:
             print('Send Message.')
-
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_profile_root(sender, instance=None, created=False, **kwargs):
-    """
-    Create a tree profile and a root folder to start.
-    :param sender:
-    :param instance:
-    :param created:
-    :param kwargs:
-    :return:
-    """
-    if created:
-        folder = TreeFolder.objects.create(name='root', user=instance, parent=None)
-        folder.save()
-
-        profile = TreeProfile.objects.create(user=instance, root_folder=folder)
-        profile.save()

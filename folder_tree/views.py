@@ -14,6 +14,7 @@ __author__ = 'jbui'
 class FolderView(View):
     """
     Render folder view.
+
     """
     # @method_decorator(login_required)
     # @method_decorator(csrf_protect)
@@ -25,6 +26,7 @@ class FolderView(View):
 class FolderNewView(View):
     """
     Render new folder.
+
     """
     # @method_decorator(login_required)
     # @method_decorator(csrf_protect)
@@ -36,6 +38,7 @@ class FolderNewView(View):
 class FolderDeleteView(View):
     """
     Render delete folder.
+
     """
     # @method_decorator(login_required)
     # @method_decorator(csrf_protect)

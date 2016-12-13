@@ -7,6 +7,7 @@ __author__ = 'jbui'
 def split_path(path):
     """
     Given path split it into list array.
+
     :param path:
     :return:
     """
@@ -18,6 +19,7 @@ def split_path(path):
 def initializing_user_session(user):
     """
     Initialize the user for the dashboard.
+
     :param user:
     """
     from .models import TreeProfile
@@ -37,7 +39,7 @@ def tree_item_to_dict(item):
     """
     if item:
         value = dict(
-            public_id=item.public_id,
+            public_id=item.id,
             name=item.name,
             children=[tree_item_to_dict(i) for i in item.get_children()]
         )
@@ -55,7 +57,12 @@ def jstree_item_to_dict(item, array):
     """
     if item:
         for child_item in item.get_children():
-            array.append(dict(id=child_item.public_id, parent=item.public_id, text=child_item.name, state=dict(opened=False)))
+            array.append(dict(
+                id=child_item.id,
+                parent=item.id,
+                text=child_item.name,
+                state=dict(opened=False)
+            ))
 
             jstree_item_to_dict(child_item, array)
     else:
