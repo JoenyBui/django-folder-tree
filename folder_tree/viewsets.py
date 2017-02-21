@@ -18,7 +18,7 @@ class TreeFullView(APIView):
 
     """
 
-    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    # authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
     permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request, format=None):
@@ -40,7 +40,7 @@ class JsTreeView(APIView):
     Javascript Tree View
 
     """
-    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    # authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
     permission_classes = (permissions.IsAuthenticated, )
 
     def get(self, request):
@@ -109,7 +109,7 @@ class GeneralFileViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     filter_fields = ('id', 'name', 'user', 'file_type')
     search_fields = ('id', 'name', 'user')
     ordering_fields = ('created', 'modified')
-    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    # authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
 
     def get_queryset(self):
         return GeneralFile.objects.filter(user=self.request.user)
@@ -130,7 +130,7 @@ class ImageFileViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     filter_fields = ('id', 'name', 'user', 'file_type')
     search_fields = ('id', 'name', 'user')
     ordering_fields = ('created', 'modified')
-    authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
+    # authentication_classes = (SessionAuthentication, BasicAuthentication, TokenAuthentication)
 
     def get_queryset(self):
         return ImageFile.objects.filter(user=self.request.user)
