@@ -1,7 +1,7 @@
-
 import os
 import shutil
 import json
+import logging
 
 from django.conf import settings
 from django.core.mail import send_mail, EmailMessage
@@ -17,7 +17,17 @@ from . import global_setting as gs
 
 __author__ = 'jbui'
 
+log = logging.getLogger(__name__)
+
+
 def user_file_path(instance, filename):
+    """
+    User File Path
+
+    :param instance:
+    :param filename:
+    :return:
+    """
     d = timezone.now()
 
     return '{0}/{1}/{2}/{3}/{4}'.format(
@@ -49,9 +59,19 @@ class TreeFolder(MPTTModel):
     modified = models.DateTimeField(auto_now_add=True, null=False, blank=True)
 
     def __str__(self):
+        """
+
+        :return:
+        """
         return 'Folder: %s' % self.name
 
     def save(self, *args, **kwargs):
+        """
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
         self.modified = timezone.now()
 
         super(TreeFolder, self).save(*args, **kwargs)
@@ -66,6 +86,7 @@ class TreeFolder(MPTTModel):
     def get_file_type(self):
         """
         Return the folder file type.
+
         :return:
         """
         if hasattr(self, 'projectfolder'):
@@ -76,6 +97,9 @@ class TreeFolder(MPTTModel):
     def is_valid(self, error, **kwargs):
         """
         Is valid for the user.
+
+        :param error:
+        :param kwargs:
         :return:
         """
         valid = True
@@ -108,6 +132,7 @@ class TreeFolder(MPTTModel):
     def get_path(self):
         """
         Get the path of the folder including the home folder.
+
         :return:
         """
         path = self.name
@@ -123,6 +148,7 @@ class TreeFolder(MPTTModel):
     def virtual_folder(self):
         """
         Return the virtual folder of the path.
+
         :return:
         """
         folders = [self.name]
@@ -141,6 +167,7 @@ class TreeFolder(MPTTModel):
     def create_folder(self):
         """
         Create the folder of the path.
+
         """
         path = os.path.join(gs.LOCATION_USER_STORAGE, self.get_path())
 
@@ -150,6 +177,7 @@ class TreeFolder(MPTTModel):
     def delete_folder(self):
         """
         Get the path with the delete folder.
+
         """
         path = os.path.join(gs.LOCATION_USER_STORAGE, self.get_path())
 
@@ -180,6 +208,7 @@ class TreeProfile(models.Model):
     def get_children(self):
         """
         Get children
+
         :return:
         """
         root = self.root_folder
@@ -187,6 +216,10 @@ class TreeProfile(models.Model):
         return utk.tree_item_to_dict(root)
 
     def get_jstree(self):
+        """
+
+        :return:
+        """
         # { id : 'ajson1', parent : '#', text : 'Simple root node', state: { opened: true} },
         # { id : 'ajson2', parent : '#', text : 'Root node 2', state: { opened: true} },
         # { id : 'ajson3', parent : 'ajson2', text : 'Child 1', state: { opened: true} },
@@ -209,6 +242,7 @@ class TreeProfile(models.Model):
     def get_tree_folder(user, path):
         """
         Get the tree folder given the path.
+
         :param user:
         :param path:
         :return:
@@ -244,6 +278,7 @@ class TreeProfile(models.Model):
     def root_path(self):
         """
         Root path.
+
         :return:
         """
         return self.root_folder.name
@@ -252,6 +287,7 @@ class TreeProfile(models.Model):
     def root_virtual_path(self):
         """
         Root virtual path.
+
         :return:
         """
         return os.path.join(self.root_folder.name)
@@ -259,18 +295,21 @@ class TreeProfile(models.Model):
     def create_root(self):
         """
         Create a root node in the database, and the folder in the storage disk.
+
         """
         self.root_folder = TreeFolder.objects.create(user=self.user, name='root', parent=None)
 
     def delete_root(self):
         """
         Delete the root folder with everything underneath.
+
         """
         pass
 
     def create_tree_folder(self, name, parent):
         """
         Create tree folder.
+
         :param name: Name of folder
         :param parent: Parent tree folder.
         :return:
@@ -283,6 +322,7 @@ class TreeProfile(models.Model):
     def create_folder(self, path, force_path=True):
         """
         Given a path, create a TreeFolder.
+
         :param path: path of the folder to create.
         :param force_path: if the intermediary folder does not exists, create it
         """
@@ -326,7 +366,8 @@ class TreeProfile(models.Model):
     def delete_folder(self, folder):
         """
         Delete a folder given a path.
-        :param path: path of the folder to delete.
+
+        :param folder: path of the folder to delete.
         """
         if isinstance(folder, TreeFolder):
             trash = Trash.objects.create(profile=self, folder=folder, previous_folder=folder.parent.id)
@@ -344,6 +385,7 @@ class TreeProfile(models.Model):
     def get_folder(self, path):
         """
         Return the tree folder given the path.
+
         :param path:
         :return:
         """
@@ -362,6 +404,7 @@ class TreeProfile(models.Model):
     def get_path(self, path):
         """
         Pass a path and then we parse it to the real path.
+
         :param path:
         :return:
         """
@@ -373,6 +416,7 @@ class TreeProfile(models.Model):
     def get_folder_json(self, show_files):
         """
         Get the json folder structure.
+
         :param show_files:
         :return:
         """
@@ -398,6 +442,7 @@ class ProjectFolder(TreeFolder):
     def get_file_type(self):
         """
         Return the folder file type.
+
         :return:
         """
         return 'project_folder'
@@ -405,6 +450,7 @@ class ProjectFolder(TreeFolder):
     def get_path(self):
         """
         Get the path of the folder including the home folder.
+
         :return:
         """
         path = self.name
@@ -460,6 +506,7 @@ class TreeFile(models.Model):
     def real_path(self):
         """
         Find the real path of the code.
+
         :return:
         """
         return os.path.join(gs.LOCATION_USER_STORAGE, self.folder.get_path(), self.get_file_name())
@@ -468,6 +515,7 @@ class TreeFile(models.Model):
     def virtual_path(self):
         """
         Virtual path.
+
         :return:
         """
         return os.path.join(self.folder.get_path(), self.get_file_name())
@@ -475,12 +523,14 @@ class TreeFile(models.Model):
     def create_file(self):
         """
         Create a new file.
+
         """
         root_folder = self.folder
 
     def get_file_name(self):
         """
         Base class needs to override this method.
+
         OVERRIDE THIS METHOD
         :return:
         """
@@ -534,6 +584,7 @@ class InputFile(TreeFile):
     def real_folder(self):
         """
         Read folder.
+
         :return:
         """
         return os.path.join(gs.LOCATION_USER_STORAGE, self.folder.get_path())
@@ -542,6 +593,7 @@ class InputFile(TreeFile):
     def virtual_folder(self):
         """
         Virtual folder
+
         :return:
         """
         return os.path.join(self.folder.get_path())
@@ -550,6 +602,7 @@ class InputFile(TreeFile):
     def real_path(self):
         """
         Find the real path of the code.
+
         :return:
         """
         return os.path.join(self.real_folder, self.get_file_name())
@@ -597,6 +650,7 @@ class GeneralFile(TreeFile):
     def set_ext(self, ext_name):
         """
         determine the extensions from the last name.
+
         :param ext_name:
         """
         for id, name in gs.FILE_TYPE:
@@ -607,6 +661,7 @@ class GeneralFile(TreeFile):
     def get_file_name(self):
         """
         Return the filename with extension.
+
         :return:
         """
         return self.name + '.' + gs.FILE_TYPE[self.file_type][1]
@@ -614,6 +669,7 @@ class GeneralFile(TreeFile):
     def get_file_type(self):
         """
         Return file type.
+
         :return:
         """
         return gs.FILE_TYPE[self.file_type][1]
@@ -621,6 +677,7 @@ class GeneralFile(TreeFile):
     def get_mime(self):
         """
         Return the mime type for the file.
+
         :return:
         """
         return gs.get_mime(self.file_type)
@@ -628,6 +685,7 @@ class GeneralFile(TreeFile):
     def send_message(self, email):
         """
         Send message of the file.
+
         :param email: email address
         :return:
         """
@@ -639,5 +697,6 @@ class GeneralFile(TreeFile):
 
             mail = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
             mail.send()
+
         except SystemError:
-            print('Send Message.')
+            log.error('Send Message.')

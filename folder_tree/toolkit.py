@@ -13,6 +13,7 @@ def split_path(path):
     """
     delimiters = "/", "\\"
     regex_pattern = '|'.join(map(re.escape, delimiters))
+
     return re.split(regex_pattern, path)
 
 
@@ -34,6 +35,7 @@ def initializing_user_session(user):
 def tree_item_to_dict(item):
     """
     Create tree item to dictionary.
+
     :param item:
     :return:
     """

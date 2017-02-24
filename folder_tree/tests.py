@@ -12,7 +12,14 @@ __author__ = 'jbui'
 
 
 class TreeFolderProfileTestCase(TestCase):
+    """
+
+    """
     def setUp(self):
+        """
+
+        :return:
+        """
         self.u1 = User.objects.create_user(username="test1",
                                            email="test1@email.com",
                                            password="password")

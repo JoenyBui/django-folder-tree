@@ -120,7 +120,7 @@ class GeneralFileViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
 class ImageFileViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     """
-    Image file viewset.
+    Image File Viewset
 
     """
     # queryset = ImageFile.objects.all()
