@@ -1,6 +1,7 @@
-=====
+# README
+
 Folder Tree
-=====
+------
 
 Folder tree is a Django app to organize a folder tree hierarchy.  It is used to help the
 user organize their files.
