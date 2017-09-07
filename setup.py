@@ -1,24 +1,8 @@
-"""
- *  PROTECTION ENGINEERING CONSULTANTS CONFIDENTIAL
- *
- *  [2014] - [2015] Protection Engineering Consultants
- *  All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
- * the property of Protection Engineering Consultants and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to Protection Engineering Consultants
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from Protection Engineering Consultants.
-"""
 import os
 from setuptools import setup
 
 
-__author__ = 'jbui'
+__author__ = 'joeny'
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
@@ -32,11 +16,11 @@ setup(
     packages=['folder_tree'],
     include_package_data=True,
     license='BSD License',  # example license
-    description='A folder tree Django app to create a folder tree hiearchy.',
+    description='A folder tree Django app to create a folder tree hierarchy.',
     long_description=README,
     url='http://www.example.com/',
     author='Joeny Bui',
-    author_email='jbui@protection-consultants.com',
+    author_email='joeny.bui@gmail.com',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
